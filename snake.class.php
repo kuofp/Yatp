@@ -1,13 +1,15 @@
 <?php
 
 class Snake{
-	public $raw;
-	public $tpl;
-	public $val;
+	protected $raw;
+	protected $tpl;
+	protected $val;
 	
 	public function __construct($file){
 		
-		$tpl = '';
+		$this->raw = '';
+		$this->tpl = '';
+		$this->val = array();
 		$this->init($file);
 		
 	}
@@ -21,14 +23,18 @@ class Snake{
 		}
 		
 		//確認檔案結構 check()...
+		$this->check($this->raw);
 		
 		//建立區塊列表
 		$this->slice($this->raw);
 	}
 	
+	protected function check($block_name){
+		return true;
+	}
+	
 	protected function slice($raw){
 		
-		//echo $this->tpl;
 		$tag = array();
 		preg_match_all('/<!--[ ]?B[ ]?:[ ]?([^- ]+)[ ]?-->()/', $raw, $tag, PREG_OFFSET_CAPTURE);
 		
@@ -60,27 +66,22 @@ class Snake{
 			
 		}else{
 			//block not found
-			return 0;
+			return 'Block ' . $block_name . ' not found!';
 		}
-	}
-	
-	public function show(){
-		$this->d($this->tpl);
-	}
-	
-	public function d($arr){
-		echo '<pre>';
-		print_r($arr);
-		echo '</pre>';
 	}
 	
 	public function assign($arr){
 		//設定變數
 		foreach($arr as $key=>$val){
+			
+			if(is_a($val, 'Snake')){
+				$arr[$key] = $arr[$key]->render();
+			}
+			
 			if(isset($this->val[$key])){
-				$this->val[$key] .= $val;
+				$this->val[$key] .= $arr[$key];
 			}else{
-				$this->val[$key] = $val;
+				$this->val[$key] = $arr[$key];
 			}
 		}
 		return $this;
@@ -91,13 +92,32 @@ class Snake{
 		foreach($this->val as $key=>$val){
 			if(isset($this->tpl[$key])){
 				//區間標籤
-				$this->raw = preg_replace('/<!--[ ]?B[ ]?:[ ]?' . $key . '[ ]?-->(.|[\r\n])*<!--[ ]?B[ ]?:[ ]?' . $key . '[ ]?-->/', $val, $this->raw);
+				$this->raw = preg_replace('/<!--[ ]?B[ ]?:[ ]?' . $key . '[ ]?-->(.|[\n])*<!--[ ]?B[ ]?:[ ]?' . $key . '[ ]?-->/', $val, $this->raw);
 				//單一標籤
 				$this->raw = preg_replace('/<!--[ ]?B[ ]?:[ ]?' . $key . '[ ]?-->/', $val, $this->raw);
 			}
 			//變數標籤
 			$this->raw = preg_replace('/{' . $key . '}/', $val, $this->raw);
 		}
-		return $this->raw;
+		
+		ob_start();
+		
+		eval('?> ' . $this->raw);
+		$content = ob_get_contents();
+		
+		ob_end_clean(); 
+		
+		return $content;
+	}
+	
+	//debug tool
+	public function show(){
+		$this->d($this->tpl);
+	}
+	
+	public function d($arr){
+		echo '<pre>';
+		print_r($arr);
+		echo '</pre>';
 	}
 }
