@@ -1,46 +1,47 @@
-<!-- B:style01 -->
+<!-- @style01 -->
 <html>
 	<head>
 		<title>{title}</title>
-		<!-- B:head -->
+		<meta charset="utf8">
+		<!-- @head -->
 	</head>
 	<body>
 		<div class="container-fluid">
 			<div class="row">
-				<!-- B:style01_nav -->
-				<!-- B:style01_banner -->
+				<!-- @style01_nav -->
+				<!-- @style01_banner -->
 			</div>
 		</div>
 		<div class="container">
 			<div class="row">
 				<div class="col-sm-3">
-					<!-- B:style01_left -->
+					<!-- @style01_left -->
 				</div>
 				<div class="col-sm-9">
-					<!-- B:style01_right -->
+					<!-- @style01_right -->
 					
 					<div class="col-sm-offset-4">
-						<!-- B:style01_pagination -->
+						<!-- @style01_pagination -->
 					</div>
 				</div>
 			</div>
 		</div>
 	</body>
 </html>
-<!-- B:style01 -->
+<!-- @style01 -->
 
 
-<!-- B:jquery_bootstrap -->
+<!-- @jquery_bootstrap -->
 	<!-- Jquery 2.2.4 -->
 	<script   src="https://code.jquery.com/jquery-2.2.4.min.js"   integrity="sha256-BbhdlvQf/xTY9gja0Dq3HiwQF8LaCRTXxZKRutelT44="   crossorigin="anonymous"></script>
 	<!-- Latest compiled and minified CSS -->
 	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
 	<!-- Latest compiled and minified JavaScript -->
 	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>
-<!-- B:jquery_bootstrap -->
+<!-- @jquery_bootstrap -->
 
 
-<!-- B:dropdown -->
+<!-- @dropdown -->
 <div class="dropdown">
   <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
 	Dropdown
@@ -54,10 +55,10 @@
 	<li><a href="#">Separated link</a></li>
   </ul>
 </div>
-<!-- B:dropdown -->
+<!-- @dropdown -->
 
 
-<!-- B:nav -->
+<!-- @nav -->
 <nav class="navbar navbar-default">
   <div class="container-fluid">
     <!-- Brand and toggle get grouped for better mobile display -->
@@ -111,10 +112,10 @@
     </div><!-- /.navbar-collapse -->
   </div><!-- /.container-fluid -->
 </nav>
-<!-- B:nav -->
+<!-- @nav -->
 
 
-<!-- B:banner -->
+<!-- @banner -->
 <style>
 .center-block {
 	display: block;
@@ -155,19 +156,19 @@
     <span class="sr-only">Next</span>
   </a>
 </div>
-<!-- B:banner -->
+<!-- @banner -->
 
 
-<!-- B:left -->
+<!-- @left -->
 <ul class="nav nav-pills nav-stacked">
   <li role="presentation" class="active"><a href="#">Home</a></li>
   <li role="presentation"><a href="#">Profile</a></li>
   <li role="presentation"><a href="#">Messages</a></li>
 </ul>
-<!-- B:left -->
+<!-- @left -->
 
 
-<!-- B:thumbnail -->
+<!-- @thumbnail -->
 <div class="col-sm-6 col-md-4">
     <div class="thumbnail">
       <img src="{src}" alt="...">
@@ -178,10 +179,10 @@
       </div>
     </div>
   </div>
-<!-- B:thumbnail -->
+<!-- @thumbnail -->
 
 
-<!-- B:pagination -->
+<!-- @pagination -->
 <nav>
   <ul class="pagination">
     <li>
@@ -201,4 +202,4 @@
     </li>
   </ul>
 </nav>
-<!-- B:pagination -->
+<!-- @pagination -->
