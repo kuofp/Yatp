@@ -36,7 +36,7 @@ class Snake{
 	protected function slice($raw){
 		
 		$tag = array();
-		preg_match_all('/<!--[ ]?@([^- ]+)[ ]?-->()/', $raw, $tag, PREG_OFFSET_CAPTURE);
+		preg_match_all('/<!--[ ]*@([^ ]+)[ ]*-->()/', $raw, $tag, PREG_OFFSET_CAPTURE);
 		
 		foreach($tag[1] as $key=>$arr){
 			
@@ -74,7 +74,7 @@ class Snake{
 		//設定變數
 		foreach($arr as $key=>$val){
 			
-			if(is_a($val, 'Snake')){
+			if(is_a($val, get_class($this))){
 				$arr[$key] = $arr[$key]->render();
 			}
 			
@@ -92,9 +92,9 @@ class Snake{
 		foreach($this->val as $key=>$val){
 			if(isset($this->tpl[$key])){
 				//區間標籤
-				$this->raw = preg_replace('/<!--[ ]?@' . $key . '[ ]?-->.*<!--[ ]?@' . $key . '[ ]?-->/s', $val, $this->raw);
+				$this->raw = preg_replace('/<!--[ ]*@' . $key . '[ ]*-->.*<!--[ ]*@' . $key . '[ ]*-->/s', $val, $this->raw);
 				//單一標籤
-				$this->raw = preg_replace('/<!--[ ]?@' . $key . '[ ]?-->/', $val, $this->raw);
+				$this->raw = preg_replace('/<!--[ ]*@' . $key . '[ ]*-->/', $val, $this->raw);
 			}
 			//變數標籤
 			$this->raw = preg_replace('/{' . $key . '}/', $val, $this->raw);
