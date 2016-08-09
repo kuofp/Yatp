@@ -15,17 +15,17 @@ class Snake{
 	}
 	
 	protected function init($file){
-		//初次建立區塊列表, 若非檔案則直接視為html
+		// load file(if found) or html
 		if(file_exists($file)){
 			$this->raw = file_get_contents($file);
 		}else{
 			$this->raw = $file;
 		}
 		
-		//確認檔案結構 check()...
+		// check()...
 		$this->check($this->raw);
 		
-		//建立區塊列表
+		// slice into blocks
 		$this->slice($this->raw);
 	}
 	
@@ -61,21 +61,21 @@ class Snake{
 		
 		if(isset($this->tpl[$block_name])){
 			
-			//將片段建立為新的物件並回傳
+			// prepare a new object
 			return new self($this->take($block_name));
 			
 		}else{
-			//block not found
-			return 'Block ' . $block_name . ' not found!';
+			// block not found, and skip this section
+			return '';
 		}
 	}
 	
 	public function assign($arr){
-		//設定變數
+		// set variables
 		foreach($arr as $key=>$val){
 			
 			if(is_a($val, get_class($this))){
-				$arr[$key] = $arr[$key]->render();
+				$arr[$key] = $arr[$key]->render(false);
 			}
 			
 			if(isset($this->val[$key])){
@@ -87,16 +87,19 @@ class Snake{
 		return $this;
 	}
 	
-	public function render(){
-		//產生畫面
+	public function render($toScreen = true){
+		// replace tags, we have 3 types as follows
+		// type 1: <!-- @tag --> ... <!-- @tag -->
+		// type 2: <!-- @tag -->
+		// type 3: {tag}
+		
 		foreach($this->val as $key=>$val){
 			if(isset($this->tpl[$key])){
-				//區間標籤
+				
 				$this->raw = preg_replace('/<!--[ ]*@' . $key . '[ ]*-->.*<!--[ ]*@' . $key . '[ ]*-->/s', $val, $this->raw);
-				//單一標籤
 				$this->raw = preg_replace('/<!--[ ]*@' . $key . '[ ]*-->/', $val, $this->raw);
 			}
-			//變數標籤
+			
 			$this->raw = preg_replace('/{' . $key . '}/', $val, $this->raw);
 		}
 		
@@ -107,10 +110,15 @@ class Snake{
 		
 		ob_end_clean(); 
 		
+		// echo to screen by default
+		if($toScreen){
+			echo $content;
+		}
+		
 		return $content;
 	}
 	
-	//debug tool
+	// debug tool
 	public function show(){
 		$this->d($this->tpl);
 	}
