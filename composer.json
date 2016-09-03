@@ -1,0 +1,15 @@
+{
+	"name": "kuofp/Snake",
+	"type": "library",
+	"description": "Template engine",
+	"keywords": ["template"],
+	"authors": [
+		{"name": "Frank Kuo", "email": "kuofp@cs.nctu.edu.tw"}
+	],
+	"require": {
+		"php": ">=5.1",
+	},
+	"autoload": {
+		"files": ["snake.class.php"]
+	}
+}
