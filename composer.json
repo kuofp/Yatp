@@ -7,7 +7,7 @@
 		{"name": "Frank Kuo", "email": "kuofp@cs.nctu.edu.tw"}
 	],
 	"require": {
-		"php": ">=5.1",
+		"php": ">=5.1"
 	},
 	"autoload": {
 		"files": ["snake.class.php"]
