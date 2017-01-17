@@ -1,14 +1,15 @@
 <?php
 
 class Snake{
+	
 	protected $raw;
 	protected $tpl;
 	protected $val;
 	
-	public function __construct($file){
+	public function __construct($file = ''){
 		
 		$this->raw = '';
-		$this->tpl = '';
+		$this->tpl = [];
 		$this->val = array();
 		$this->init($file);
 		
@@ -36,78 +37,153 @@ class Snake{
 	protected function slice($raw){
 		
 		$tag = array();
-		preg_match_all('/<!--[ ]*@([^ ]+)[ ]*-->()/', $raw, $tag, PREG_OFFSET_CAPTURE);
 		
+		// type 1: <!-- @tag --> ... <!-- @tag -->
+		// type 2: {tag}
+		preg_match_all('/<!--[ ]*@([\w-]+)[ ]*-->()|{([\w-]*)}()/', $raw, $tag, PREG_OFFSET_CAPTURE);
+		
+		$stk = array();
 		foreach($tag[1] as $key=>$arr){
 			
 			$block_head = $tag[0][$key][1];
-			$block_name = $tag[1][$key][0];
-			$block_tail = $tag[2][$key][1];
+			$block_name = isset($tag[3][$key][0])? $tag[3][$key][0]: $tag[1][$key][0];
+			$block_tail = isset($tag[4][$key][1])? $tag[4][$key][1]: $tag[2][$key][1];
+			$mark = isset($tag[3][$key][0])? 1: 0;
 			
-			if(isset($this->tpl[$block_name])){
-				$this->tpl[$block_name]['tail'] = $block_head;
+			if($mark){
+				$list = implode('.', $stk);
+				
+			}elseif(end($stk) != $block_name){
+				$list = implode('.', $stk);
+				$stk[] = $block_name;
+				
+			}elseif(end($stk) == $block_name){
+				unset($stk[key($stk)]);
+				$list = implode('.', $stk);
+				
+			}
+			
+			$list .= $list? '.': '';
+			
+			$idx = $list . $block_name . ($mark? '_' . rand(): '');
+			if(isset($this->tpl[$idx])){
+				// take first block when duplicate, while mark tags can be stored several times
+				$this->tpl[$idx]['tail'] = $this->tpl[$idx]['tail']?: $block_tail;
 			}else{
-				$this->tpl[$block_name]['head'] = $block_tail;
-				$this->tpl[$block_name]['tail'] = $block_tail;
+				$this->tpl[$idx] = array(
+					'head' => $block_head,
+					'tail' => $mark? $block_tail: 0,
+					'list' => $list . $block_name,
+					'name' => $block_name,
+					'mark' => $mark,
+				);
 			}
 		}
+		
+		// assign order
+		uasort($this->tpl, function($a, $b){
+			$a = $a['tail'];
+			$b = $b['tail'];
+			if($a == $b){
+				return 0;
+			}
+			return ($a > $b)? -1: 1;
+		});
 	}
 	
 	protected function take($block_name){
 		return substr($this->raw, $this->tpl[$block_name]['head'], $this->tpl[$block_name]['tail'] - $this->tpl[$block_name]['head']);
 	}
 	
+	// support dot operation
+	protected function path($block_name, $all = false){
+		
+		$short = explode('.', $block_name);
+		$block = end($short);
+		$multi = array();
+		
+		foreach($this->tpl as $key=>$arr){
+			$match = 0;
+			if(!$all && $arr['mark']){
+				continue;
+			}
+			if($arr['name'] == $block){
+				
+				$tmp = explode('.', $arr['list']);
+				foreach($tmp as $val){
+					if($match < count($short) && $short[$match] == $val){
+						$match++;
+					}
+				}
+				
+				// all matched
+				if($match == count($short)){
+					if($all){
+						$multi[] = $key;
+					}else{
+						return $key;
+					}
+				}
+			}
+		}
+		return count($multi)? $multi: 0;
+	}
+	
 	public function block($block_name){
 		
-		if(isset($this->tpl[$block_name])){
+		$block = $this->path($block_name);
+		
+		if($block){
 			
 			// prepare a new object
-			return new self($this->take($block_name));
+			$obj = new self($this->take($block));
+			return $obj;
 			
 		}else{
+			
 			// block not found, and skip this section
-			return '';
+			return new self('block ' . $block_name . ' not found');
 		}
 	}
 	
 	public function assign($arr){
+		
 		// set variables
 		foreach($arr as $key=>$val){
-			
-			if(is_a($val, get_class($this))){
-				$arr[$key] = $arr[$key]->render(false);
-			}
-			
-			if(isset($this->val[$key])){
-				$this->val[$key] .= $arr[$key];
+			$blocks = $this->path($key, true);
+			if($blocks){
+				
+				foreach($blocks as $block){
+					$this->val[$block][] = $arr[$key];
+				}
 			}else{
-				$this->val[$key] = $arr[$key];
+				echo 'mark ' . $key . ' not found';
 			}
 		}
 		return $this;
 	}
 	
 	public function render($toScreen = true){
-		// replace tags, we have 3 types as follows
-		// type 1: <!-- @tag --> ... <!-- @tag -->
-		// type 2: <!-- @tag -->
-		// type 3: {tag}
 		
-		foreach($this->val as $key=>$val){
-			if(isset($this->tpl[$key])){
-				
-				$this->raw = preg_replace('/<!--[ ]*@' . $key . '[ ]*-->.*<!--[ ]*@' . $key . '[ ]*-->/s', $val, $this->raw);
-				$this->raw = preg_replace('/<!--[ ]*@' . $key . '[ ]*-->/', $val, $this->raw);
+		$html = $this->raw;
+		foreach($this->tpl as $key=>$val){
+			if(isset($this->val[$key])){
+				$str = '';
+				foreach($this->val[$key] as $tmp){
+					
+					// deal with object
+					if(is_a($tmp, get_class($this))){
+						$tmp = $tmp->render(false);
+					}
+					$str .= $tmp;
+				}
+				$html = substr_replace($html, $str, $val['head'], $val['tail'] - $val['head']);
 			}
-			
-			$this->raw = preg_replace('/{' . $key . '}/', $val, $this->raw);
 		}
 		
 		ob_start();
-		
-		eval('?> ' . $this->raw);
+		eval('?> ' . $html);
 		$content = ob_get_contents();
-		
 		ob_end_clean(); 
 		
 		// echo to screen by default
@@ -119,7 +195,7 @@ class Snake{
 	}
 	
 	// debug tool
-	public function show(){
+	public function debug(){
 		$this->d($this->tpl);
 	}
 	
