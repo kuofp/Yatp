@@ -1,6 +1,6 @@
 <?php
 
-include '../snake.class.php';
+include '../snake.php';
 
 $tpl = new Snake('view1.tpl');
 

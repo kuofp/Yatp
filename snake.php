@@ -152,15 +152,31 @@ class Snake{
 		foreach($arr as $key=>$val){
 			$blocks = $this->path($key, true);
 			if($blocks){
-				
-				foreach($blocks as $block){
-					$this->val[$block][] = $arr[$key];
+				if(!is_array($val)){
+					$val = array($val);
 				}
+				foreach($blocks as $block){
+					foreach($val as $v){
+						$this->val[$block][] = $v;
+					}
+				}
+				
 			}else{
 				echo 'mark ' . $key . ' not found';
 			}
 		}
 		return $this;
+	}
+	
+	public function nest($data){
+		
+		$blocks = [];
+		foreach($data as $key=>$arr){
+			$obj = new Self($this->render(false));
+			$blocks[] = $obj->assign($arr);
+		}
+		
+		return $blocks;
 	}
 	
 	public function render($toScreen = true){
