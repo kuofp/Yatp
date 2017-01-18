@@ -1,6 +1,6 @@
 <?php
 
-class Snake{
+class Yatp{
 	
 	protected $raw;
 	protected $tpl;

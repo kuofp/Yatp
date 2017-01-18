@@ -142,9 +142,9 @@ $list_nav_left = array(
 	),
 );
 
-include '../snake.php';
+include '../yatp.php';
 
-$tpl = new Snake('view2.tpl');
+$tpl = new Yatp('view2.tpl');
 $page = $tpl->block('html.type1');
 
 // a bootstrap sample
@@ -171,7 +171,7 @@ foreach($list_nav_left as $key=>$arr){
 
 $page->assign(array(
 	'nav' => $tpl->block('nav.type1')->assign(array(
-		'brand' => 'Snake',
+		'brand' => 'Yatp',
 		'main.left' => $nest,
 		'main.right' => '',
 	)),

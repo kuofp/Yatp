@@ -1,8 +1,8 @@
 <?php
 
-include '../snake.php';
+include '../yatp.php';
 
-$tpl = new Snake('view1.tpl');
+$tpl = new Yatp('view1.tpl');
 
 //basic
 $tpl->block('basic')->assign(array(
@@ -27,7 +27,7 @@ $tpl->block('basic')->assign(array(
 ))->render();
 
 //initial with string
-$tpl2 = new Snake('<strong>html string</strong>');
+$tpl2 = new Yatp('<strong>html string</strong>');
 $tpl->block('basic')->assign(array(
 	'b' => $tpl2
 ))->render();

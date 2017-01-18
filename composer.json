@@ -1,5 +1,5 @@
 {
-	"name": "kuofp/Snake",
+	"name": "kuofp/Yatp",
 	"type": "library",
 	"description": "Template engine",
 	"keywords": ["template"],
@@ -10,6 +10,6 @@
 		"php": ">=5.1"
 	},
 	"autoload": {
-		"files": ["snake.php"]
+		"files": ["yatp.php"]
 	}
 }
