@@ -10,6 +10,6 @@
 		"php": ">=5.1"
 	},
 	"autoload": {
-		"files": ["snake.class.php"]
+		"files": ["snake.php"]
 	}
 }
