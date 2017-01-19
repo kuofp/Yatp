@@ -5,9 +5,11 @@ class Yatp{
 	protected $raw;
 	protected $tpl;
 	protected $val;
+	protected $err;
 	
-	public function __construct($file = ''){
+	public function __construct($file = '', $err = false){
 		
+		$this->err = $err;
 		$this->raw = '';
 		$this->tpl = [];
 		$this->val = array();
@@ -135,13 +137,14 @@ class Yatp{
 		if($block){
 			
 			// prepare a new object
-			$obj = new self($this->take($block));
+			$obj = new self($this->take($block), $this->err);
 			return $obj;
 			
 		}else{
 			
 			// block not found, and skip this section
-			return new self('block ' . $block_name . ' not found');
+			$html = ($this->err)? 'block ' . $block_name . ' not found': '';
+			return new self($html, $this->err);
 		}
 	}
 	
@@ -161,7 +164,7 @@ class Yatp{
 				}
 				
 			}else{
-				echo 'mark ' . $key . ' not found';
+				echo ($this->err)? 'mark ' . $key . ' not found<br>': '';
 			}
 		}
 		return $this;
@@ -211,6 +214,7 @@ class Yatp{
 	
 	// debug tool
 	public function debug(){
+		$this->err = true;
 		$this->d($this->tpl);
 	}
 	
