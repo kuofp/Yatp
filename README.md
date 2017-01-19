@@ -96,6 +96,14 @@ echo $html;
 
 // Output:
 // <strong>Hello World!</strong>
+
+
+// PHP code is allowed
+$tpl = new Yatp('<?php echo "Hello World!"?>');
+$tpl->render();
+
+// Output:
+// Hello World!
 ```
 
 ### Yatp::block
@@ -232,7 +240,6 @@ $tpl->assign(array(
 ### Yatp::nest
 
 ```php
-// Print to screen by default
 $tpl = new Yatp('
 	<!-- @ul -->
     <h1>{title}<h1>
