@@ -2,7 +2,13 @@
 
 include '../yatp.php';
 
-$tpl = new Yatp('view1.tpl');
+$tpl = new Yatp('basic.tpl');
+
+//initial with string
+$tpl2 = new Yatp('<strong>html string</strong>');
+$tpl->block('basic')->assign(array(
+	'b' => $tpl2
+))->render();
 
 //basic
 $tpl->block('basic')->assign(array(
@@ -24,12 +30,6 @@ $tpl->block('code')->render();
 //render with another block contents
 $tpl->block('basic')->assign(array(
 	'b' => $tpl->block('code')
-))->render();
-
-//initial with string
-$tpl2 = new Yatp('<strong>html string</strong>');
-$tpl->block('basic')->assign(array(
-	'b' => $tpl2
 ))->render();
 
 //dot operation

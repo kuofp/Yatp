@@ -144,7 +144,7 @@ $list_nav_left = array(
 
 include '../yatp.php';
 
-$tpl = new Yatp('view2.tpl');
+$tpl = new Yatp('bootstrap.tpl');
 $page = $tpl->block('html.type1');
 
 // a bootstrap sample
