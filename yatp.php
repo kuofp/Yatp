@@ -12,7 +12,6 @@ class Yatp{
 		$this->tpl = [];
 		$this->val = array();
 		$this->init($file);
-		
 	}
 	
 	protected function init($file){
@@ -172,14 +171,14 @@ class Yatp{
 		
 		$blocks = [];
 		foreach($data as $key=>$arr){
-			$obj = new Self($this->render(false));
+			$obj = clone $this;
 			$blocks[] = $obj->assign($arr);
 		}
 		
 		return $blocks;
 	}
 	
-	public function render($toScreen = true){
+	public function render($print = true){
 		
 		$html = $this->raw;
 		foreach($this->tpl as $key=>$val){
@@ -203,7 +202,7 @@ class Yatp{
 		ob_end_clean(); 
 		
 		// echo to screen by default
-		if($toScreen){
+		if($print){
 			echo $content;
 		}
 		
