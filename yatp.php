@@ -11,7 +11,7 @@ class Yatp{
 		
 		$this->err = $err;
 		$this->raw = '';
-		$this->tpl = [];
+		$this->tpl = array();
 		$this->val = array();
 		$this->init($file);
 	}
@@ -69,7 +69,9 @@ class Yatp{
 			$idx = $list . $block_name . ($mark? '_' . rand(): '');
 			if(isset($this->tpl[$idx])){
 				// take first block when duplicate, while mark tags can be stored several times
-				$this->tpl[$idx]['tail'] = $this->tpl[$idx]['tail']?: $block_tail;
+				if(!$this->tpl[$idx]['tail']){
+					$this->tpl[$idx]['tail'] = $block_tail;
+				}
 			}else{
 				$this->tpl[$idx] = array(
 					'head' => $block_head,
@@ -135,13 +137,11 @@ class Yatp{
 		$block = $this->path($block_name);
 		
 		if($block){
-			
 			// prepare a new object
 			$obj = new self($this->take($block), $this->err);
 			return $obj;
 			
 		}else{
-			
 			// block not found, and skip this section
 			$html = ($this->err)? 'block ' . $block_name . ' not found': '';
 			return new self($html, $this->err);
@@ -172,8 +172,8 @@ class Yatp{
 	
 	public function nest($data){
 		
-		$tpl = new Self('{tar}', $this->err);
-		$blocks = [];
+		$tpl = new self('{tar}', $this->err);
+		$blocks = array();
 		foreach($data as $key=>$arr){
 			$obj = clone $this;
 			$blocks[] = $obj->assign($arr);
