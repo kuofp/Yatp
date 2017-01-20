@@ -2,7 +2,7 @@
 
 > Yet another [TemplatePower](http://templatepower.codocad.com/)
 > 
-> A Frontend-friendly PHP Template Engine
+> As a Frontend-friendly PHP Template Engine, we do not consider providing functions in html files currently.
 
 
 ## Format
@@ -294,3 +294,5 @@ $tpl->block('ul')->assign(array(
 ## Example
 
 See examples folder
+
+

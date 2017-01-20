@@ -173,7 +173,9 @@ class Yatp{
 	public function nest($data){
 		
 		$tpl = new self('{tar}', $this->err);
-		$blocks = array();
+		
+		// prevent leaving {tar} mark when data is empty
+		$blocks = array('');
 		foreach($data as $key=>$arr){
 			$obj = clone $this;
 			$blocks[] = $obj->assign($arr);
