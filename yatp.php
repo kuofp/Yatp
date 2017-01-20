@@ -172,13 +172,17 @@ class Yatp{
 	
 	public function nest($data){
 		
+		$tpl = new Self('{tar}', $this->err);
 		$blocks = [];
 		foreach($data as $key=>$arr){
 			$obj = clone $this;
 			$blocks[] = $obj->assign($arr);
 		}
+		$tpl->assign(array(
+			'tar' => $blocks
+		));
 		
-		return $blocks;
+		return $tpl;
 	}
 	
 	public function render($print = true){

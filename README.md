@@ -171,10 +171,16 @@ $tpl->assign(array(
 
 // Assign several times
 $tpl = new Yatp('<strong>{str}</strong>');
+
+// Equivalent
+// $tpl->assign(array(
+//    'str' => 'Hi!'
+// ))->assign(array(
+//    'str' => 'Hi!'
+// ))->render();
+
 $tpl->assign(array(
-	'str' => 'Hi!'
-))->assign(array(
-	'str' => 'Hi!'
+    'str' => array('Hi!', 'Hi!')
 ))->render();
 
 // Output:

@@ -17,11 +17,7 @@ $tpl->block('basic')->assign(array(
 
 //more
 $tpl->block('basic')->assign(array(
-	'b' => 'new line!<br>',
-))->assign(array(
-	'b' => 'new line!<br>',
-))->assign(array(
-	'b' => 'new line!<br>',
+	'b' => array('new line!<br>', 'new line!<br>', 'new line!<br>')
 ))->render();
 
 //render with some code
@@ -46,4 +42,13 @@ $tpl->block('dot.d')->render();
 $tpl->block('multi-nested')->assign(array(
 	'a1.d.e' => 'this is a1.d.e',
 	'a2.d.e' => 'this is a2.d.e',
+))->render();
+
+//nest
+$tpl->block('nest')->nest(array(
+	array('text' => '1'),
+	array('text' => '2'),
+	array('text' => '3'),
+	array('text' => '4'),
+	array('text' => '5'),
 ))->render();
