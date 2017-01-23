@@ -1,8 +1,9 @@
 {
 	"name": "kuofp/Yatp",
 	"type": "library",
-	"description": "Template engine",
+	"description": "A Frontend-friendly PHP Template Engine",
 	"keywords": ["template"],
+	"license": "MIT",
 	"authors": [
 		{"name": "Frank Kuo", "email": "kuofp@cs.nctu.edu.tw"}
 	],
