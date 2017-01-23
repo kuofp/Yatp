@@ -52,3 +52,23 @@ $tpl->block('nest')->nest(array(
 	array('text' => '4'),
 	array('text' => '5'),
 ))->render();
+
+//debug
+$tpl->block('a_missing_block')->assign(array(
+	'a_missing_mark' => '',
+	'#wrong style' => ''
+))->debug();
+
+$tpl2 = new Yatp('<!-- @single -->');
+$tpl2->debug()->render();
+
+//you can prepend the debug function before the render function for convenience purposes
+$tpl->block('a_missing_block')->debug()->render();
+
+
+$tpl = new Yatp();
+
+$tpl->block('a_missing_block')->assign(array(
+	'a_missing_mark' => '',
+	'#wrong style' => ''
+))->debug()->render();

@@ -291,6 +291,16 @@ $tpl->block('ul')->assign(array(
 
 ```
 
+### Yatp::debug
+```php
+$tpl = new Yatp();
+
+$tpl->block('a_missing_block')->assign(array(
+	'a_missing_mark' => '',
+	'#wrong style' => ''
+))->debug();
+```
+
 ## Example
 
 See examples folder

@@ -7,12 +7,12 @@ class Yatp{
 	protected $val;
 	protected $err;
 	
-	public function __construct($file = '', $err = false){
+	public function __construct($file = ''){
 		
-		$this->err = $err;
 		$this->raw = '';
 		$this->tpl = array();
 		$this->val = array();
+		$this->err = array('Debug info:');
 		$this->init($file);
 	}
 	
@@ -24,15 +24,13 @@ class Yatp{
 			$this->raw = $file;
 		}
 		
-		// check()...
-		$this->check($this->raw);
-		
 		// slice into blocks
 		$this->slice($this->raw);
 	}
 	
-	protected function check($block_name){
-		return true;
+	protected function check($tag){
+		
+		return preg_match('/^[\w-]+$/', $tag);
 	}
 	
 	protected function slice($raw){
@@ -92,6 +90,12 @@ class Yatp{
 			}
 			return ($a > $b)? -1: 1;
 		});
+		
+		foreach($this->tpl as $key=>$arr){
+			if($arr['tail'] <= $arr['head']){
+				$this->err[] = 'block "' . $key . '" is not closed';
+			}
+		}
 	}
 	
 	protected function take($block_name){
@@ -138,13 +142,19 @@ class Yatp{
 		
 		if($block){
 			// prepare a new object
-			$obj = new self($this->take($block), $this->err);
+			$obj = new self($this->take($block));
 			return $obj;
 			
 		}else{
 			// block not found, and skip this section
-			$html = ($this->err)? 'block ' . $block_name . ' not found': '';
-			return new self($html, $this->err);
+			$obj = new self();
+			if($this->check($block_name)){
+				$obj->err[] = 'block "' . $block_name . '" is not found';
+			}else{
+				$obj->err[] = 'block "' . $block_name . '" is invalid';
+			}
+			
+			return $obj;
 		}
 	}
 	
@@ -164,7 +174,11 @@ class Yatp{
 				}
 				
 			}else{
-				echo ($this->err)? 'mark ' . $key . ' not found<br>': '';
+				if($this->check($key)){
+					$this->err[] = 'block or mark "' . $key . '" is not found';
+				}else{
+					$this->err[] = 'block or mark "' . $key . '" is invalid';
+				}
 			}
 		}
 		return $this;
@@ -172,7 +186,7 @@ class Yatp{
 	
 	public function nest($data){
 		
-		$tpl = new self('{tar}', $this->err);
+		$tpl = new self('{tar}');
 		
 		// prevent leaving {tar} mark when data is empty
 		$blocks = array('');
@@ -220,8 +234,11 @@ class Yatp{
 	
 	// debug tool
 	public function debug(){
-		$this->err = true;
-		$this->d($this->tpl);
+		
+		//$this->d($this->tpl);
+		$this->d($this->err);
+		
+		return $this;
 	}
 	
 	public function d($arr){
