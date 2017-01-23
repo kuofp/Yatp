@@ -1,5 +1,5 @@
 {
-	"name": "kuofp/Yatp",
+	"name": "kuofp/yatp",
 	"type": "library",
 	"description": "A Frontend-friendly PHP Template Engine",
 	"keywords": ["template"],
