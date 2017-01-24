@@ -34,12 +34,21 @@ Marks
 
 ## Get Started
 
+### Install
+
+* Via composer
+
+```
+$ composer require kuofp/yatp
+```
+
+* Download directly
 ```php
 // Require it with the correct path
 require_once 'yatp.php';
 ```
 
-And enjoy!
+### And enjoy!
 ```php
 // Support dot operation
 $tpl = new Yatp('
