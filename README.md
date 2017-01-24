@@ -4,7 +4,7 @@
 > 
 > As a Frontend-friendly PHP Template Engine, we do not consider providing functions in html files currently.
 > 
-> [中文說明](https://kuofp.github.io/markdown-editor/?url=https://raw.githubusercontent.com/kuofp/Yatp/master/README.zh-tw)
+> [中文說明](https://github.com/kuofp/Yatp/blob/master/README.zh-tw.md)
 
 
 ## Format
