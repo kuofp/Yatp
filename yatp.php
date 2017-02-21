@@ -217,6 +217,14 @@ class Yatp{
 			}
 		}
 		
+		// remove tags and some extra character before render by default
+		$patt = array(
+			'/<!--[ ]*@[\w-]+[ ]*-->/',
+			'/{[\w-]*}/',
+			'/[\t]*/',
+		);
+		$html = preg_replace($patt, '', $html);
+		
 		ob_start();
 		eval('?> ' . $html);
 		$content = ob_get_contents();
