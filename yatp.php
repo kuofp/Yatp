@@ -37,7 +37,7 @@ class Yatp{
 		
 		// type 1: <!-- @tag --> ... <!-- @tag -->
 		// type 2: {tag}
-		preg_match_all('/<!--[ ]*@([\w-]+)[ ]*-->()|{([\w-]*)}()/', $this->raw, $tag, PREG_OFFSET_CAPTURE);
+		preg_match_all('/<!--[ ]*@([\w-]+)[ ]*-->()|{([\w-]+)}()/', $this->raw, $tag, PREG_OFFSET_CAPTURE);
 		
 		$stk = array();
 		foreach($tag[1] as $key=>$arr){
@@ -220,7 +220,7 @@ class Yatp{
 		// remove tags and some extra character before render by default
 		$patt = array(
 			'/<!--[ ]*@[\w-]+[ ]*-->/',
-			'/{[\w-]*}/',
+			'/{[\w-]+}/',
 			'/[\t]*/',
 		);
 		$html = preg_replace($patt, '', $html);
