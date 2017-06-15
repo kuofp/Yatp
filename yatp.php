@@ -188,9 +188,11 @@ class Yatp{
 		
 		// prevent leaving {tar} mark when data is empty
 		$blocks = array('');
-		foreach($data as $key=>$arr){
-			$obj = clone $this;
-			$blocks[] = $obj->assign($arr);
+		if(is_array($data)){
+			foreach($data as $key=>$arr){
+				$obj = clone $this;
+				$blocks[] = $obj->assign($arr);
+			}
 		}
 		$tpl->assign(array(
 			'tar' => $blocks
