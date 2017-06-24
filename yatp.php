@@ -162,9 +162,25 @@ class Yatp{
 		foreach($arr as $key=>$val){
 			$blocks = $this->path($key, true);
 			if($blocks){
+				// remove redefined blocks
+				foreach($blocks as $k=>$block){
+					foreach($this->val as $param=>$any){
+						// param is a parent for the block
+						if(strpos($block, $param . '.') === 0){
+							unset($blocks[$k]);
+							continue;
+						}
+						// block is a parent for the param
+						if(strpos($param, $block . '.') === 0){
+							unset($this->val[$param]);
+						}
+					}
+				}
+				
 				if(!is_array($val)){
 					$val = array($val);
 				}
+				
 				foreach($blocks as $block){
 					foreach($val as $v){
 						$this->val[$block][] = $v;

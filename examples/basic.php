@@ -53,6 +53,12 @@ $tpl->block('nest')->nest(array(
 	array('text' => '5'),
 ))->render();
 
+//redefine a scope
+$tpl->block('scope')->assign(array(
+	'a' => 'How do you turn this on',
+	'c' => 'corrupted',
+))->render();
+
 //debug
 $tpl->block('a_missing_block')->assign(array(
 	'a_missing_mark' => '',
