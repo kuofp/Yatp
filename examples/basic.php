@@ -59,6 +59,9 @@ $tpl->block('scope')->assign(array(
 	'c' => 'corrupted',
 ))->render();
 
+//script contains {digits}
+$tpl->block('script')->render();
+
 //debug
 $tpl->block('a_missing_block')->assign(array(
 	'a_missing_mark' => '',

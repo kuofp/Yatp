@@ -27,7 +27,6 @@
 	<!-- @z -->3<br><!-- @z -->
 <!-- @redefine -->
 
-
 <!-- @multi-nested -->
 	<!-- @a1 -->1<br>
 		<!-- @b -->2{e}<br>
@@ -56,3 +55,8 @@
 	<!-- @a -->{c}<!-- @a -->
 	{c}
 <!-- @scope -->
+
+<!-- @script -->
+	<br>
+	'aaa'.replace(/a{3}/g, 'ccc');
+<!-- @script -->
