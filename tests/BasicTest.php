@@ -1,8 +1,6 @@
 <?php
 
-use PHPUnit\Framework\TestCase;
-
-class BasicTest extends TestCase
+class BasicTest extends PHPUnit_Framework_Testcase
 {
 	private $tpl;
 	private $dom;
