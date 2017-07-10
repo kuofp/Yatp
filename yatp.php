@@ -244,7 +244,7 @@ class Yatp{
 		$html = preg_replace($patt, '', $html);
 		
 		ob_start();
-		eval('?> ' . $html);
+		eval('?>' . $html);
 		$content = ob_get_contents();
 		ob_end_clean(); 
 		
