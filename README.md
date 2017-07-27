@@ -2,7 +2,7 @@
 
 > Yet another [TemplatePower](http://templatepower.codocad.com/)
 > 
-> As a Frontend-friendly PHP Template Engine, we do not consider providing functions in html files currently.
+> A logic-less PHP template engine
 > 
 > [中文說明](https://github.com/kuofp/Yatp/blob/master/README.zh-tw.md)
 
@@ -30,6 +30,7 @@ Marks
 {mark_name}
 ```
 * **A valid block_name/mark_name:** [A-Za-z0-9_-]+
+* **A mark_name should contain at least one alphabet** (update since V1.1)
 
 
 
@@ -50,47 +51,22 @@ $ composer require kuofp/yatp
 require_once 'yatp.php';
 ```
 
-### And enjoy!
-```php
-// Support dot operation
-$tpl = new Yatp('
-  <!-- @dot -->
-    <!-- @a -->1<br>
-      <!-- @b -->2<br>
-        <!-- @c -->3<br>{e}
-          <!-- @d -->4<br>{e}
-          <!-- @d -->
-        <!-- @c -->
-      <!-- @b -->
-    <!-- @a -->
-  <!-- @dot -->
-');
 
-$tpl->block('dot.c')->assign(array(
-	'd.e' => 'd.e was replaced',
-))->render();
-
-// Output:
-// 3
-// {e} 4
-// d.e was replaced
-
-```
 
 ## Methods
 
-### Yatp::__construct
+### __construct(string $html_or_filepath)
 
 ```php
 // Initialize
 $tpl = new Yatp('<strong>{str}</strong>');
 
-// You can use a file(if exists).
+// You can use a file (if exists).
 $tpl = new Yatp('view.tpl');
 ```
 
 
-### Yatp::render
+### render([ bool $print = true ])
 
 ```php
 // Print to screen by default
@@ -101,7 +77,7 @@ $tpl->render();
 // <strong>Hello World!</strong>
 
 
-// Get return value without printing
+// Get result without a print
 $html = $tpl->render(false);
 echo $html;
 
@@ -117,17 +93,17 @@ $tpl->render();
 // Hello World!
 ```
 
-### Yatp::block
+### block(string $target)
 
 ```php
 // Support dot operation
 $tpl = new Yatp('
-    <!-- @a -->
-        <!-- @c -->a.c<!-- @c -->
-    <!-- @a -->
-    <!-- @b -->
-        <!-- @c -->b.c<!-- @c -->
-    <!-- @b -->
+	<!-- @a -->
+		<!-- @c -->a.c<!-- @c -->
+	<!-- @a -->
+	<!-- @b -->
+		<!-- @c -->b.c<!-- @c -->
+	<!-- @b -->
 ');
 $tpl->block('a.c')->render();
 
@@ -137,7 +113,7 @@ $tpl->block('a.c')->render();
 
 // Search the most likely one
 $tpl = new Yatp('
-    <!-- @a -->a
+	<!-- @a -->a
 		<!-- @b -->b
 			<!-- @c -->c
 				<!-- @d -->d
@@ -157,9 +133,9 @@ $tpl->block('a.d')->render();
 
 // First is adopted when block is redefined
 $tpl = new Yatp('
-    <!-- @a -->1<!-- @a -->
-    <!-- @a -->2<!-- @a -->
-    <!-- @a -->3<!-- @a -->
+	<!-- @a -->1<!-- @a -->
+	<!-- @a -->2<!-- @a -->
+	<!-- @a -->3<!-- @a -->
 ');
 $tpl->block('a')->render();
 
@@ -167,7 +143,7 @@ $tpl->block('a')->render();
 // 1
 ```
 
-### Yatp::assign
+### assign(array $params)
 
 ```php
 // Assign to a mark
@@ -191,7 +167,7 @@ $tpl = new Yatp('<strong>{str}</strong>');
 // ))->render();
 
 $tpl->assign(array(
-    'str' => array('Hi!', 'Hi!')
+	'str' => array('Hi!', 'Hi!')
 ))->render();
 
 // Output:
@@ -209,10 +185,10 @@ $tpl->assign(array(
 
 
 // You can assign with another block
-$tpl = new Yatp('<strong>{str}</strong>');
-$msg = new Yatp('<!-- @str -->Hello World!<!-- @str -->');
+$tpl = new Yatp('<strong>{mark}</strong>');
+$msg = new Yatp('<!-- @block -->Hello World!<!-- @block -->');
 $tpl->assign(array(
-	'str' => $msg->block('str')
+	'mark' => $msg->block('block')
 ))->render();
 
 // Output:
@@ -221,80 +197,51 @@ $tpl->assign(array(
 
 // Support dot operation, too
 $tpl = new Yatp('
-    <!-- @a -->
-        <!-- @c -->a.c<!-- @c -->
-    <!-- @a -->
-    <!-- @b -->
-        <!-- @c -->b.c<!-- @c -->
-    <!-- @b -->
+	<!-- @a -->
+		<!-- @c -->a.c<!-- @c -->
+	<!-- @a -->
+	<!-- @b -->
+		<!-- @c -->b.c<!-- @c -->
+	<!-- @b -->
 ');
 $tpl->assign(array(
-    'a.c' => 'A.C'
+	'a.c' => 'replaced'
 ))->render();
 
 // Output:
-// A.C b.c
+// replaced b.c
 
-
-// Affect to all descendants
-$tpl = new Yatp('
-    <!-- @a -->
-        <!-- @c -->a.c<!-- @c -->
-    <!-- @a -->
-    <!-- @b -->
-        <!-- @c -->b.c<!-- @c -->
-    <!-- @b -->
-    {c} {c}
-');
-$tpl->assign(array(
-    'c' => 'C'
-))->render();
-
-// Output:
-// C C C C
 ```
 
-### Yatp::nest
+### nest(array $params)
 
 ```php
 $tpl = new Yatp('
-	<!-- @ul -->
-    <h1>{title}<h1>
-    <ul>{li}</ul>
-    <!-- @ul -->
-    
-    <!-- @li -->
-    <li>{title}: {text}</li>
-    <!-- @li -->
+	<ul>
+	<!-- @li -->
+		<li>{title}</li>
+	<!-- @li -->
+	</ul>
 ');
 
 $data = array(
-    array(
-        'title' => 'Lesson1',
-        'text'  => 'Hello World!'
-    ),
-    array(
-        'title' => 'Lesson2',
-        'text'  => 'Functions'
-    ),
+	array('title' => 'Lesson1'),
+	array('title' => 'Lesson2'),
 );
 
 // Equivalent
-// $tpl->block('ul')->assign(array(
-//     'title' => 'Syllabus',
-//     'li'    => array(
-//                    $tpl->block('li')->assign($data[0]),
-//                    $tpl->block('li')->assign($data[1]),
-//                ),
+// $tpl->assign(array(
+//     'li' => array(
+//         $tpl->block('li')->assign($data[0]),
+//         $tpl->block('li')->assign($data[1]),
+//     )
 // ))->render();
 
-$tpl->block('ul')->assign(array(
-    'title' => 'Syllabus',
-    'li'    => $tpl->block('li')->nest($data)
+$tpl->assign(array(
+	'li' => $tpl->block('li')->nest($data)
 ))->render();
 
 // Output:
-// <h1>Syllabus</h1>
 // <ul>
 //     <li>Lesson1: Hello World!</li>
 //     <li>Lesson2: Functions</li>
@@ -302,7 +249,7 @@ $tpl->block('ul')->assign(array(
 
 ```
 
-### Yatp::debug
+### debug( void )
 ```php
 $tpl = new Yatp();
 
@@ -310,10 +257,55 @@ $tpl->block('a_missing_block')->assign(array(
 	'a_missing_mark' => '',
 	'#wrong style' => ''
 ))->debug();
+
+// Output:
+// Array
+// (
+//     [0] => Debug info:
+//     [1] => block "a_missing_block" is not found
+//     [2] => block or mark "a_missing_mark" is not found
+//     [3] => block or mark "#wrong style" is invalid
+// )
+
 ```
 
 ## Example
 
-See examples folder
+view.html
+```html
+<h1>{title}<h1>
+<ul>
+<!-- @li -->
+	<li>{title}: {text}</li>
+<!-- @li -->
+</ul>
+```
+php code
+```php
+$tpl = new Yatp('view.html');
 
+$data = array(
+	array(
+		'title' => 'Lesson1',
+		'text'  => 'Hello World!'
+	),
+	array(
+		'title' => 'Lesson2',
+		'text'  => 'Functions'
+	),
+);
 
+$tpl->assign(array(
+	'title' => 'Syllabus',
+	'li'    => $tpl->block('li')->nest($data)
+))->render();
+```
+
+Output:
+```html
+<h1>Syllabus<h1>
+<ul>
+	<li>Lesson1: Hello World!</li>
+	<li>Lesson2: Functions</li>
+</ul>
+```

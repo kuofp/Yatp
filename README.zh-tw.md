@@ -2,7 +2,7 @@
 
 > Yet another [TemplatePower](http://templatepower.codocad.com/)
 > 
-> 我們盡可能地將畫面與程式分離, 因此暫不考慮提供樣板自帶任何程式化功能
+> A logic-less PHP template engine
 
 
 ## 格式
@@ -19,7 +19,7 @@
 	...
 <!-- @block_name     -->
 
-#錯誤 區塊必須使用 2 的標籤
+#錯誤 區塊必須使用 2 個標籤
 <!-- @block_name -->
 ```
 
@@ -28,6 +28,7 @@
 {mark_name}
 ```
 * **區塊或標記的正規表示式:** [A-Za-z0-9_-]+
+* **標記必須包含 1 個字母** (update since V1.1)
 
 
 
@@ -48,47 +49,22 @@ $ composer require kuofp/yatp
 require_once 'yatp.php';
 ```
 
-### 準備工作完成!
-```php
-// 支援 . (點)搜尋
-$tpl = new Yatp('
-  <!-- @dot -->
-    <!-- @a -->1<br>
-      <!-- @b -->2<br>
-        <!-- @c -->3<br>{e}
-          <!-- @d -->4<br>{e}
-          <!-- @d -->
-        <!-- @c -->
-      <!-- @b -->
-    <!-- @a -->
-  <!-- @dot -->
-');
 
-$tpl->block('dot.c')->assign(array(
-	'd.e' => 'd.e was replaced',
-))->render();
-
-// Output:
-// 3
-// {e} 4
-// d.e was replaced
-
-```
 
 ## 方法
 
-### Yatp::__construct
+### __construct(string $html_or_filepath)
 
 ```php
 // 初始化
 $tpl = new Yatp('<strong>{str}</strong>');
 
-// 你也可以使用檔案來初始
+// 可以使用檔案來初始
 $tpl = new Yatp('view.tpl');
 ```
 
 
-### Yatp::render
+### render([ bool $print = true ])
 
 ```php
 // 預設會印出至畫面上
@@ -99,7 +75,7 @@ $tpl->render();
 // <strong>Hello World!</strong>
 
 
-// 如果你不想要自動印出請帶 false 參數
+// 如果不想要自動印出請帶 false 參數
 $html = $tpl->render(false);
 echo $html;
 
@@ -115,17 +91,17 @@ $tpl->render();
 // Hello World!
 ```
 
-### Yatp::block
+### block(string $target)
 
 ```php
 // 支援 . (點)搜尋
 $tpl = new Yatp('
-    <!-- @a -->
-        <!-- @c -->a.c<!-- @c -->
-    <!-- @a -->
-    <!-- @b -->
-        <!-- @c -->b.c<!-- @c -->
-    <!-- @b -->
+	<!-- @a -->
+		<!-- @c -->a.c<!-- @c -->
+	<!-- @a -->
+	<!-- @b -->
+		<!-- @c -->b.c<!-- @c -->
+	<!-- @b -->
 ');
 $tpl->block('a.c')->render();
 
@@ -135,7 +111,7 @@ $tpl->block('a.c')->render();
 
 // 其中 . (點)搜尋可以跳過數個階層, 只要該樣板中可以找到區塊(block)或標記(mark)
 $tpl = new Yatp('
-    <!-- @a -->a
+	<!-- @a -->a
 		<!-- @b -->b
 			<!-- @c -->c
 				<!-- @d -->d
@@ -144,7 +120,7 @@ $tpl = new Yatp('
 		<!-- @b -->
 	<!-- @a -->
 ');
-// Equivalent
+// 等價寫法
 // $tpl->block('a.b.c.d')->render();
 // $tpl->block('c.d')->render();
 $tpl->block('a.d')->render();
@@ -153,11 +129,11 @@ $tpl->block('a.d')->render();
 // d
 
 
-// 你只能取得至多一個區塊(block), 重覆定義將優先使用第一個
+// 只能取得至多一個區塊(block), 重覆定義將優先使用第一個
 $tpl = new Yatp('
-    <!-- @a -->1<!-- @a -->
-    <!-- @a -->2<!-- @a -->
-    <!-- @a -->3<!-- @a -->
+	<!-- @a -->1<!-- @a -->
+	<!-- @a -->2<!-- @a -->
+	<!-- @a -->3<!-- @a -->
 ');
 $tpl->block('a')->render();
 
@@ -165,7 +141,7 @@ $tpl->block('a')->render();
 // 1
 ```
 
-### Yatp::assign
+### assign(array $params)
 
 ```php
 // 配置變數至標記(mark)上
@@ -178,10 +154,10 @@ $tpl->assign(array(
 // <strong>Hello World!</strong>
 
 
-// 你可以配置多次, 那麼將會有疊加效果
+// 可以配置多次, 將會有疊加效果
 $tpl = new Yatp('<strong>{str}</strong>');
 
-// Equivalent
+// 等價寫法
 // $tpl->assign(array(
 //    'str' => 'Hi!'
 // ))->assign(array(
@@ -189,14 +165,14 @@ $tpl = new Yatp('<strong>{str}</strong>');
 // ))->render();
 
 $tpl->assign(array(
-    'str' => array('Hi!', 'Hi!')
+	'str' => array('Hi!', 'Hi!')
 ))->render();
 
 // Output:
 // <strong>Hi!Hi!</strong>
 
 
-// 你可以用相同方式配置給區塊(block)
+// 可以用相同方式配置給區塊(block)
 $tpl = new Yatp('<strong><!-- @str --><!-- @str --></strong>');
 $tpl->assign(array(
 	'str' => 'Hello World!'
@@ -206,11 +182,11 @@ $tpl->assign(array(
 // <strong>Hello World!</strong>
 
 
-// 你可以將另一個區塊(block)指定為配置的參數
-$tpl = new Yatp('<strong>{str}</strong>');
-$msg = new Yatp('<!-- @str -->Hello World!<!-- @str -->');
+// 可以將另一個區塊(block)指定為配置的參數
+$tpl = new Yatp('<strong>{mark}</strong>');
+$msg = new Yatp('<!-- @block -->Hello World!<!-- @block -->');
 $tpl->assign(array(
-	'str' => $msg->block('str')
+	'mark' => $msg->block('block')
 ))->render();
 
 // Output:
@@ -219,80 +195,51 @@ $tpl->assign(array(
 
 // 配置同樣支援 . (點)搜尋
 $tpl = new Yatp('
-    <!-- @a -->
-        <!-- @c -->a.c<!-- @c -->
-    <!-- @a -->
-    <!-- @b -->
-        <!-- @c -->b.c<!-- @c -->
-    <!-- @b -->
+	<!-- @a -->
+		<!-- @c -->a.c<!-- @c -->
+	<!-- @a -->
+	<!-- @b -->
+		<!-- @c -->b.c<!-- @c -->
+	<!-- @b -->
 ');
 $tpl->assign(array(
-    'a.c' => 'A.C'
+	'a.c' => 'replaced'
 ))->render();
 
 // Output:
-// A.C b.c
+// replaced b.c
 
-
-// 但是你必須注意, 配置將會影響該區域所有符合規則的項目
-$tpl = new Yatp('
-    <!-- @a -->
-        <!-- @c -->a.c<!-- @c -->
-    <!-- @a -->
-    <!-- @b -->
-        <!-- @c -->b.c<!-- @c -->
-    <!-- @b -->
-    {c} {c}
-');
-$tpl->assign(array(
-    'c' => 'C'
-))->render();
-
-// Output:
-// C C C C
 ```
 
-### Yatp::nest
+### nest(array $params)
 
 ```php
 $tpl = new Yatp('
-	<!-- @ul -->
-    <h1>{title}<h1>
-    <ul>{li}</ul>
-    <!-- @ul -->
-    
-    <!-- @li -->
-    <li>{title}: {text}</li>
-    <!-- @li -->
+	<ul>
+	<!-- @li -->
+		<li>{title}</li>
+	<!-- @li -->
+	</ul>
 ');
 
 $data = array(
-    array(
-        'title' => 'Lesson1',
-        'text'  => 'Hello World!'
-    ),
-    array(
-        'title' => 'Lesson2',
-        'text'  => 'Functions'
-    ),
+	array('title' => 'Lesson1'),
+	array('title' => 'Lesson2'),
 );
 
-// Equivalent
-// $tpl->block('ul')->assign(array(
-//     'title' => 'Syllabus',
-//     'li'    => array(
-//                    $tpl->block('li')->assign($data[0]),
-//                    $tpl->block('li')->assign($data[1]),
-//                ),
+// 等價寫法
+// $tpl->assign(array(
+//     'li' => array(
+//         $tpl->block('li')->assign($data[0]),
+//         $tpl->block('li')->assign($data[1]),
+//     )
 // ))->render();
 
-$tpl->block('ul')->assign(array(
-    'title' => 'Syllabus',
-    'li'    => $tpl->block('li')->nest($data)
+$tpl->assign(array(
+	'li' => $tpl->block('li')->nest($data)
 ))->render();
 
 // Output:
-// <h1>Syllabus</h1>
 // <ul>
 //     <li>Lesson1: Hello World!</li>
 //     <li>Lesson2: Functions</li>
@@ -300,7 +247,7 @@ $tpl->block('ul')->assign(array(
 
 ```
 
-### Yatp::debug
+### debug( void )
 ```php
 $tpl = new Yatp();
 
@@ -308,10 +255,55 @@ $tpl->block('a_missing_block')->assign(array(
 	'a_missing_mark' => '',
 	'#wrong style' => ''
 ))->debug();
+
+// Output:
+// Array
+// (
+//     [0] => Debug info:
+//     [1] => block "a_missing_block" is not found
+//     [2] => block or mark "a_missing_mark" is not found
+//     [3] => block or mark "#wrong style" is invalid
+// )
+
 ```
 
 ## 範例
 
-請參考 examples 資料夾
+view.html
+```html
+<h1>{title}<h1>
+<ul>
+<!-- @li -->
+	<li>{title}: {text}</li>
+<!-- @li -->
+</ul>
+```
+php code
+```php
+$tpl = new Yatp('view.html');
 
+$data = array(
+	array(
+		'title' => 'Lesson1',
+		'text'  => 'Hello World!'
+	),
+	array(
+		'title' => 'Lesson2',
+		'text'  => 'Functions'
+	),
+);
 
+$tpl->assign(array(
+	'title' => 'Syllabus',
+	'li'    => $tpl->block('li')->nest($data)
+))->render();
+```
+
+Output:
+```html
+<h1>Syllabus<h1>
+<ul>
+	<li>Lesson1: Hello World!</li>
+	<li>Lesson2: Functions</li>
+</ul>
+```
