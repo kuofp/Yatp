@@ -2,7 +2,7 @@
 /*!
  * Yatp Template Engine
  * https://github.com/kuofp/Yatp
- * Version 1.0
+ * Version 1.1
  *
  * Copyright 2017, Frank Kuo
  * Released under the MIT license
