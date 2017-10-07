@@ -200,21 +200,14 @@ class Yatp{
 	
 	public function nest($data){
 		
-		$tpl = new self('{tar}');
-		
-		// prevent leaving {tar} mark when data is empty
-		$blocks = array('');
+		$html = '';
 		if(is_array($data)){
 			foreach($data as $key=>$arr){
 				$obj = clone $this;
-				$blocks[] = $obj->assign($arr);
+				$html .= $obj->assign($arr)->render(false);
 			}
 		}
-		$tpl->assign(array(
-			'tar' => $blocks
-		));
-		
-		return $tpl;
+		return new self($html);
 	}
 	
 	public function render($print = true){
