@@ -204,13 +204,13 @@ class Yatp{
 		if(is_array($data)){
 			foreach($data as $key=>$arr){
 				$obj = clone $this;
-				$html .= $obj->assign($arr)->render(false);
+				$html .= $obj->assign($arr)->render(false, false);
 			}
 		}
 		return new self($html);
 	}
 	
-	public function render($print = true){
+	public function render($print = true, $clean = true){
 		
 		$html = $this->raw;
 		foreach($this->tpl as $key=>$val){
@@ -220,7 +220,7 @@ class Yatp{
 					
 					// deal with object
 					if(is_a($tmp, get_class($this))){
-						$tmp = $tmp->render(false);
+						$tmp = $tmp->render(false, false);
 					}
 					$str .= $tmp;
 				}
@@ -229,12 +229,14 @@ class Yatp{
 		}
 		
 		// remove tags and some extra character before render by default
-		$patt = array(
-			'/<!--[ ]*@[\w-]+[ ]*-->/',
-			'/{[\w-]*[a-zA-Z]+[\w-]*}/',
-			'/[\t]*/',
-		);
-		$html = preg_replace($patt, '', $html);
+		if($clean){
+			$patt = array(
+				'/<!--[ ]*@[\w-]+[ ]*-->/',
+				'/{[\w-]*[a-zA-Z]+[\w-]*}/',
+				'/[\t]*/',
+			);
+			$html = preg_replace($patt, '', $html);
+		}
 		
 		ob_start();
 		eval('?>' . $html);
