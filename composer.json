@@ -8,7 +8,7 @@
 		{"name": "Frank Kuo", "email": "kuofp@cs.nctu.edu.tw"}
 	],
 	"require": {
-		"php": ">=5.3"
+		"php": ">=5.4"
 	},
 	"autoload": {
 		"files": ["yatp.php"]
