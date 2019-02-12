@@ -18,9 +18,9 @@ class Yatp{
 		
 		// load file(if found) or html
 		$this->raw = file_exists($file)? file_get_contents($file): $file;
-		$this->tpl = array();
-		$this->val = array();
-		$this->err = array('Debug info:');
+		$this->tpl = [];
+		$this->val = [];
+		$this->err = ['Debug info:'];
 		
 		// slice into blocks
 		$this->slice();
@@ -33,13 +33,13 @@ class Yatp{
 	
 	protected function slice(){
 		
-		$tag = array();
+		$tag = [];
 		
 		// type 1: <!-- @tag --> ... <!-- @tag -->
 		// type 2: {tag}
 		preg_match_all('/<!--[ ]*@([\w-]+)[ ]*-->()|{([\w-]*[a-zA-Z]+[\w-]*)}()/', $this->raw, $tag, PREG_OFFSET_CAPTURE);
 		
-		$stk = array();
+		$stk = [];
 		foreach($tag[1] as $key=>$arr){
 			
 			$block_head = $tag[0][$key][1];
@@ -50,11 +50,11 @@ class Yatp{
 			if($mark){
 				$list = implode('.', $stk);
 				
-			}elseif(end($stk) != $block_name){
+			}else if(end($stk) != $block_name){
 				$list = implode('.', $stk);
 				$stk[] = $block_name;
 				
-			}elseif(end($stk) == $block_name){
+			}else if(end($stk) == $block_name){
 				unset($stk[key($stk)]);
 				$list = implode('.', $stk);
 				
@@ -69,13 +69,13 @@ class Yatp{
 					$this->tpl[$idx]['tail'] = $block_tail;
 				}
 			}else{
-				$this->tpl[$idx] = array(
+				$this->tpl[$idx] = [
 					'head' => $block_head,
 					'tail' => $mark? $block_tail: 0,
 					'list' => $list . $block_name,
 					'name' => $block_name,
 					'mark' => $mark,
-				);
+				];
 			}
 		}
 		
@@ -105,7 +105,7 @@ class Yatp{
 		
 		$short = explode('.', $block_name);
 		$block = end($short);
-		$multi = array();
+		$multi = [];
 		
 		foreach($this->tpl as $key=>$arr){
 			$match = 0;
@@ -178,7 +178,7 @@ class Yatp{
 				}
 				
 				if(!is_array($val)){
-					$val = array($val);
+					$val = [$val];
 				}
 				
 				foreach($blocks as $block){
@@ -230,11 +230,11 @@ class Yatp{
 		
 		// remove tags and some extra character before render by default
 		if($clean){
-			$patt = array(
+			$patt = [
 				'/<!--[ ]*@[\w-]+[ ]*-->/',
 				'/{[\w-]*[a-zA-Z]+[\w-]*}/',
 				'/[\t]*/',
-			);
+			];
 			$html = preg_replace($patt, '', $html);
 		}
 		
