@@ -26,11 +26,6 @@ class Yatp{
 		$this->slice();
 	}
 	
-	protected function check($tag){
-		
-		return preg_match('/^[\w-]+$/', $tag);
-	}
-	
 	protected function slice(){
 		
 		$tag = [];
@@ -146,11 +141,7 @@ class Yatp{
 		}else{
 			// block not found, and skip this section
 			$obj = new self();
-			if($this->check($block_name)){
-				$obj->err[] = 'block "' . $block_name . '" is not found';
-			}else{
-				$obj->err[] = 'block "' . $block_name . '" is invalid';
-			}
+			$obj->err[] = 'block "' . $block_name . '" is not found/invalid';
 			
 			return $obj;
 		}
@@ -188,11 +179,7 @@ class Yatp{
 				}
 				
 			}else{
-				if($this->check($key)){
-					$this->err[] = 'block or mark "' . $key . '" is not found';
-				}else{
-					$this->err[] = 'block or mark "' . $key . '" is invalid';
-				}
+				$this->err[] = 'block or mark "' . $key . '" is not found/invalid';
 			}
 		}
 		return $this;
