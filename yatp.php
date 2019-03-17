@@ -12,6 +12,7 @@ class Yatp{
 	protected $raw;
 	protected $tpl;
 	protected $val;
+	protected $tmp;
 	protected $err;
 	
 	public function __construct($file = ''){
@@ -20,6 +21,7 @@ class Yatp{
 		$this->raw = file_exists($file)? file_get_contents($file): $file;
 		$this->tpl = [];
 		$this->val = [];
+		$this->tmp = [];
 		$this->err = ['Debug info:'];
 		
 		// slice into blocks
@@ -131,20 +133,18 @@ class Yatp{
 	
 	public function block($block_name){
 		
-		$block = $this->path($block_name);
-		
-		if($block){
-			// prepare a new object
-			$obj = new self($this->take($block));
-			return $obj;
-			
-		}else{
-			// block not found, and skip this section
-			$obj = new self();
-			$obj->err[] = 'block "' . $block_name . '" is not found/invalid';
-			
-			return $obj;
+		if(!isset($this->tmp[$block_name])){
+			$block = $this->path($block_name);
+			if($block){
+				$this->tmp[$block_name] = new self($this->take($block));
+			}else{
+				$obj = new self();
+				$obj->err[] = 'block "' . $block_name . '" is not found/invalid';
+				return $obj;
+			}
 		}
+		
+		return clone $this->tmp[$block_name];
 	}
 	
 	public function assign($arr){
