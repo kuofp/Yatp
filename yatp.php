@@ -194,7 +194,9 @@ class Yatp{
 				$html .= $obj->assign($arr)->render(false, false);
 			}
 		}
-		return new self($html);
+		
+		$tmp = new self('{tar}');
+		return $tmp->assign(['tar' => $html]);
 	}
 	
 	public function render($print = true, $clean = true){
@@ -223,19 +225,19 @@ class Yatp{
 				'/[\t]*/',
 			];
 			$html = preg_replace($patt, '', $html);
+			
+			ob_start();
+			eval('?>' . $html);
+			$html = ob_get_contents();
+			ob_end_clean();
 		}
-		
-		ob_start();
-		eval('?>' . $html);
-		$content = ob_get_contents();
-		ob_end_clean(); 
 		
 		// echo to screen by default
 		if($print){
-			echo $content;
+			echo $html;
 		}
 		
-		return $content;
+		return $html;
 	}
 	
 	// debug tool
