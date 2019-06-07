@@ -2,7 +2,7 @@
 /*!
  * Yatp Template Engine
  * https://github.com/kuofp/Yatp
- * Version 1.3
+ * Version 1.3.1
  *
  * Copyright 2017, Frank Kuo
  * Released under the MIT license
@@ -222,7 +222,7 @@ class Yatp{
 			$patt = [
 				'/<!--[ ]*@[\w-]+[ ]*-->/',
 				'/{[\w-]*[a-zA-Z]+[\w-]*}/',
-				'/[\t]*/',
+				'/[\t]+/',
 			];
 			$html = preg_replace($patt, '', $html);
 			
