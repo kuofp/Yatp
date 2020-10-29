@@ -148,9 +148,9 @@ $tpl->block('a')->render();
 ```php
 // Assign to a mark
 $tpl = new Yatp('<strong>{str}</strong>');
-$tpl->assign(array(
+$tpl->assign([
 	'str' => 'Hello World!'
-))->render();
+])->render();
 
 // Output:
 // <strong>Hello World!</strong>
@@ -160,15 +160,15 @@ $tpl->assign(array(
 $tpl = new Yatp('<strong>{str}</strong>');
 
 // Equivalent
-// $tpl->assign(array(
+// $tpl->assign([
 //    'str' => 'Hi!'
-// ))->assign(array(
+// ])->assign([
 //    'str' => 'Hi!'
-// ))->render();
+// ])->render();
 
-$tpl->assign(array(
-	'str' => array('Hi!', 'Hi!')
-))->render();
+$tpl->assign([
+	'str' => ['Hi!', 'Hi!']
+])->render();
 
 // Output:
 // <strong>Hi!Hi!</strong>
@@ -176,9 +176,9 @@ $tpl->assign(array(
 
 // Assign a variable to block in the same way
 $tpl = new Yatp('<strong><!-- @str --><!-- @str --></strong>');
-$tpl->assign(array(
+$tpl->assign([
 	'str' => 'Hello World!'
-))->render();
+])->render();
 
 // Output:
 // <strong>Hello World!</strong>
@@ -187,9 +187,9 @@ $tpl->assign(array(
 // You can assign with another block
 $tpl = new Yatp('<strong>{mark}</strong>');
 $msg = new Yatp('<!-- @block -->Hello World!<!-- @block -->');
-$tpl->assign(array(
+$tpl->assign([
 	'mark' => $msg->block('block')
-))->render();
+])->render();
 
 // Output:
 // <strong>Hello World!</strong>
@@ -204,9 +204,9 @@ $tpl = new Yatp('
 		<!-- @c -->b.c<!-- @c -->
 	<!-- @b -->
 ');
-$tpl->assign(array(
+$tpl->assign([
 	'a.c' => 'replaced'
-))->render();
+])->render();
 
 // Output:
 // replaced b.c
@@ -224,22 +224,22 @@ $tpl = new Yatp('
 	</ul>
 ');
 
-$data = array(
-	array('title' => 'Lesson1'),
-	array('title' => 'Lesson2'),
-);
+$data = [
+	['title' => 'Lesson1'],
+	['title' => 'Lesson2'],
+];
 
 // Equivalent
-// $tpl->assign(array(
-//     'li' => array(
+// $tpl->assign([
+//     'li' => [
 //         $tpl->block('li')->assign($data[0]),
 //         $tpl->block('li')->assign($data[1]),
-//     )
-// ))->render();
+//     ]
+// ])->render();
 
-$tpl->assign(array(
+$tpl->assign([
 	'li' => $tpl->block('li')->nest($data)
-))->render();
+])->render();
 
 // Output:
 // <ul>
@@ -253,10 +253,10 @@ $tpl->assign(array(
 ```php
 $tpl = new Yatp();
 
-$tpl->block('a_missing_block')->assign(array(
+$tpl->block('a_missing_block')->assign([
 	'a_missing_mark' => '',
 	'#wrong style' => ''
-))->debug();
+])->debug();
 
 // Output:
 // Array
@@ -284,21 +284,21 @@ php code
 ```php
 $tpl = new Yatp('view.html');
 
-$data = array(
-	array(
+$data = [
+	[
 		'title' => 'Lesson1',
 		'text'  => 'Hello World!'
-	),
-	array(
+	],
+	[
 		'title' => 'Lesson2',
 		'text'  => 'Functions'
-	),
-);
+	],
+];
 
-$tpl->assign(array(
+$tpl->assign([
 	'title' => 'Syllabus',
 	'li'    => $tpl->block('li')->nest($data)
-))->render();
+])->render();
 ```
 
 Output:
