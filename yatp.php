@@ -38,11 +38,13 @@ class Yatp{
 		
 		$stk = [];
 		foreach($tag[1] as $key=>$arr){
+			// php 7.4
+			$o = (isset($tag[3][$key][1]) && $tag[3][$key][1] != -1)? 2: 0;
 			
 			$block_head = $tag[0][$key][1];
-			$block_name = isset($tag[3][$key][0])? $tag[3][$key][0]: $tag[1][$key][0];
-			$block_tail = isset($tag[4][$key][1])? $tag[4][$key][1]: $tag[2][$key][1];
-			$mark = isset($tag[3][$key][0])? 1: 0;
+			$block_name = $tag[1 + $o][$key][0];
+			$block_tail = $tag[2 + $o][$key][1];
+			$mark = $o;
 			
 			if($mark){
 				$list = implode('.', $stk);
