@@ -2,9 +2,9 @@
 /*!
  * Yatp Template Engine
  * https://github.com/kuofp/Yatp
- * Version 1.3.1
+ * Version 1.3.2
  *
- * Copyright 2017, Frank Kuo
+ * Copyright 2020, Frank Kuo
  * Released under the MIT license
  */
 class Yatp{
